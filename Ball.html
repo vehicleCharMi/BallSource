@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Bouncing</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .ball {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="ball" id="ball"></div>
+    </div>
+    <script>
+        let ball = document.getElementById("ball");
+        let container = document.getElementById("container");
+        
+        let posX = Math.random() * 200 - 100, posY = Math.random() * 200 - 100;
+        let velocityX = (Math.random() * 20 - 10) * 1.5, velocityY = (Math.random() * 20 - 10) * 1.5;
+        let gravity = 1.5;
+        let containerSize = 500;
+        let ballSize = 50;
+        let speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+        
+        function update() {
+            velocityY += gravity;
+            let currentSpeed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+            let scale = speed / currentSpeed;
+            velocityX *= scale;
+            velocityY *= scale;
+            
+            posX += velocityX;
+            posY += velocityY;
+            
+            let radius = containerSize / 2;
+            let distance = Math.sqrt(posX * posX + posY * posY);
+            if (distance + ballSize / 2 >= radius) {
+                let angle = Math.atan2(posY, posX);
+                posX = Math.cos(angle) * (radius - ballSize / 2);
+                posY = Math.sin(angle) * (radius - ballSize / 2);
+                velocityX = -Math.cos(angle) * speed * 1.3;
+                velocityY = -Math.sin(angle) * speed * 1.3;
+            }
+            
+            ball.style.transform = `translate(${posX}px, ${posY}px)`;
+            
+            if (containerSize > 150) {
+                containerSize -= 0.5;
+                container.style.width = containerSize + "px";
+                container.style.height = containerSize + "px";
+            } else {
+                containerSize = 500;
+                container.style.width = containerSize + "px";
+                container.style.height = containerSize + "px";
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        update();
+    </script>
+</body>
+</html>
